@@ -274,6 +274,30 @@ class RemindersCog(commands.Cog):
 
         await interaction.response.send_message(f"✏️ Reminder **#{id}** updated.", ephemeral=True)
 
+    @remind_group.command(name="help", description="Show all reminder commands")
+    async def remind_help(self, interaction: discord.Interaction):
+        embed = discord.Embed(
+            title="ReminderBot Help",
+            description="The bot will @mention you on every interval until you mark the reminder done.",
+            color=discord.Color.blurple(),
+        )
+        embed.add_field(
+            name="/remind add",
+            value=(
+                "`message` — what to remind you about\n"
+                "`interval` — how often to repeat: `30m`, `2h`, `1d`, `1w`\n"
+                "`start` *(optional)* — delay before first fire: `in 10m`"
+            ),
+            inline=False,
+        )
+        embed.add_field(name="/remind list", value="Show all your active reminders.", inline=False)
+        embed.add_field(name="/remind done <id>", value="Mark a reminder complete — stops all future fires.", inline=False)
+        embed.add_field(name="/remind snooze <id> <duration>", value="Pause a reminder for a while, e.g. `1h`, `2d`.", inline=False)
+        embed.add_field(name="/remind edit <id>", value="Update the `message` and/or `interval` of an existing reminder.", inline=False)
+        embed.add_field(name="/remind delete <id>", value="Cancel a reminder without marking it done.", inline=False)
+        embed.set_footer(text="Each reminder message also has Done and Snooze 1h buttons for quick actions.")
+        await interaction.response.send_message(embed=embed, ephemeral=True)
+
     # ── internal helpers ──────────────────────────────────────────────────────
 
     def _schedule_reminder(self, reminder_id: int, first_fire: datetime, interval_secs: int):
